@@ -144,9 +144,9 @@ def getAllItems(request):
     ret_items = []
     for item in items:
         #ret_item = get_item_dict(item)
-        ret_item = item['name']
+        ret_item = item.name
         ret_items.append(ret_item)
-    return ret_items
+    return JsonResponse({"items": ret_items})
 
     
 
