@@ -28,30 +28,42 @@ def checkIfValidAssociates(item_type, items):
         return False
     return True
 
+def addWellWith(snack_or_drink, well_with, _type):
+    if _type == 'snack':
+        snack_or_drink.addDrinks(well_with)
+    else:
+        snack_or_drink.addSnacks(well_with)
+    return
+
 def addItem(request):
 
     if request.method != 'POST':
         return JsonResponse({"error": "Only POST allowed"})
     print("Here")
     print(request.body)
-    request.body = json.loads(request.body)
-    item = Item.objects.filter(name=request.body.name)
+    rbody = json.loads(request.body)
+    print(rbody)
+    item = Item.objects.filter(name=rbody['name'])
 
     if item.exists():
         return JsonResponse({"error": "More than one item with the same name in the menu!"})
     
-    if request.body.type not in ["snack", "drink"]:
+    if rbody['type'] not in ["snack", "drink"]:
         return JsonResponse({"error": "Item must be either a snack or a drink"})
-    elif not checkIfValidAssociates(request.body.type, request.body.well_with):
+    elif 'well_with' in rbody.keys() and not checkIfValidAssociates(rbody['type'], rbody['well_with']):
         return JsonResponse({"error": "Invalid associated items"})
 
     
-    item = Item(name=request.body.name, ingredients=request.body.ingredients)
+    item = Item(name=rbody['name'], ingredients=rbody['ingredients'])
     item.save()
-    if(request.body.type == "snack"):
-        item.snack.create()
+    if(rbody['type'] == "snack"):
+        snack = Snack(item=item)
+        snack.save()
+        addWellWith(snack, rbody['well_with'], 'snack')
     else:
-        item.drink.create()
+        drink = Drink(item=item)
+        drink.save()
+        addWellWith(drink, rbody['well_with'], 'drink')
 
     return JsonResponse({"success": True})
 
@@ -69,23 +81,30 @@ def deleteItem(request, itemName):
 def updateItem(request):
     if request.method != 'POST':
         return JsonResponse({"error": "Only POST allowed"})
+    
+    rbody = json.loads(request.body)
     try:
-        item = Item.objects.get(name=request.body.name)
+        item = Item.objects.get(name=rbody['name'])
     except Item.DoesNotExist:
         return JsonResponse({"error": "Item does not exist in the menu yet"})        
     
-    if request.body.type not in ["snack", "drink"]:
+
+    if rbody['type'] not in ["snack", "drink"]:
         return JsonResponse({"error": "Item must be either a snack or a drink"})
-    elif not checkIfValidAssociates(request.body.type, request.body.well_with):
+    elif 'well_with' in rbody.keys() and not checkIfValidAssociates(rbody['type'], rbody['well_with']):
         return JsonResponse({"error": "Invalid associated items"})
     
     item.delete()
-    item = Item(name=request.body.name, ingredients=request.body.ingredients)
+    item = Item(name=rbody['name'], ingredients=rbody['ingredients'])
     item.save()
-    if(request.body.type == "snack"):
-        item.snack.create()
+    if(rbody['type'] == "snack"):
+        snack = Snack(item=item)
+        snack.save()
+        addWellWith(snack, rbody['well_with'], 'snack')
     else:
-        item.drink.create()
+        drink = Drink(item=item)
+        drink.save()
+        addWellWith(drink, rbody['well_with'], 'drink')
 
     return JsonResponse({"success": True})
 
@@ -125,7 +144,7 @@ def getAllItems(request):
     ret_items = []
     for item in items:
         #ret_item = get_item_dict(item)
-        ret_item = item.name
+        ret_item = item['name']
         ret_items.append(ret_item)
     return ret_items
 

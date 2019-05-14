@@ -28,17 +28,19 @@ $.ajaxSetup({
 });
 
 
+
 $(document).ready(function () {
     console.log("Here")
     $.ajax({
-        url: 'http://192.168.99.100:8000/api/v1/menu/addItem/',
-        type: 'POST',
+        url: 'http://192.168.99.100:8000/api/v1/menu/getItem/second_item',
+        type: 'GET',
         dataType: 'json',
         contentType: 'application/json',
         data: JSON.stringify({
-            "name": "first_item",
-            "ingredients": ["ingr1", "ingr2"],
-            "type": "snack"
+            "name": "second_item",
+            "ingredients": ["ingr3", "ingr4"],
+            "type": "drink",
+            "well_with": ["first_item"]
         }),
         success: function (data) {
             $("p").text(JSON.stringify(data));
