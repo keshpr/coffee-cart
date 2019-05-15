@@ -49,14 +49,13 @@ function getBody(){
 
 function addMessage(data){
     console.log('Adding message');
-    var mess = "<strong>";
+    var mess = ""
     if(data.success){
         mess += "Success!"
     }else if(data.error){
         mess += "Error: " + data.error;
     }
-    mess += "</strong>"
-    $("#message").append(mess);
+    $("#message").text(mess);
 }
 
 $(document).ready(function () {
@@ -80,7 +79,7 @@ $(document).ready(function () {
             $("#list-of-sides").append("<div class='side'><div class='side-name'>" + side + "</div><button type='button' class='remove-button'>Remove</button></div><br></br>")
         });
     });
-    $("#add-form").submit(function(event){
+    $(".add-form").submit(function(event){
         console.log("Sending")
         var body = getBody();
         console.log(body)
@@ -97,9 +96,10 @@ $(document).ready(function () {
         })
         event.preventDefault();
     });
-    $("#update-form").submit(function(event){
+    $(".update-form").submit(function(event){
     
         var body = getBody();
+        console.log(body);
         $.ajax({
             url: 'http://192.168.99.100:8000/api/v1/menu/updateItem/',
             type: 'POST',

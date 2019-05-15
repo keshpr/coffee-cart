@@ -12,6 +12,4 @@ urlpatterns = [
     path('addItem/', views.addItem),
     path('updateItem/', views.updateItem),
     path('deleteItem/<str:itemName>/', views.deleteItem),
-    path('getItem/<str:itemName>/', views.getItem),
-    path('getAllItems/', views.getAllItems),
 ]

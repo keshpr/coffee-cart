@@ -11,7 +11,7 @@ from django.http import Http404
 def index(request):
     all_items = getAllItems()
     all_items = all_items['items']
-    paginator = Paginator(all_items, 20)
+    paginator = Paginator(all_items, 2)
     if not 'page' in request.GET:
         page_num = 1
     else:
@@ -41,7 +41,14 @@ def updateView(request):
     ret_item = get_item_dict(item)
     well_with = to_arr(Drink.objects.all().values_list('item__name', flat=True)) if hasattr(item, 'snack') else \
         to_arr(Snack.objects.all().values_list('item__name', flat=True))
-    return render(request, 'menu_backend/update.html', {'item': ret_item, 'well_with': well_with})
+    context = {
+        'item': ret_item, 
+        'well_with': well_with, 
+        'title': 'Coffee Cart Update Item',
+        'button_val': 'Update Item',
+        'form_type': 'update-form'
+        }
+    return render(request, 'menu_backend/editItem.html', context)
 
 def addView(request):
     if request.method != 'GET':
@@ -52,11 +59,21 @@ def addView(request):
         "ingredients": [],
         "goes_well_with": []
     }
+    
     well_with = to_arr(Drink.objects.all().values_list('item__name', flat=True)) if request.GET.get('type') == 'snack' else \
         to_arr(Snack.objects.all().values_list('item__name', flat=True))
-    return render(request, 'menu_backend/add.html', {'item': ret_item, 'well_with': well_with})
+    context = {
+        'item': ret_item, 
+        'well_with': well_with, 
+        'title': 'Coffee Cart Add Item',
+        'button_val': 'Add to menu',
+        'form_type': 'add-form'
+        }
+    return render(request, 'menu_backend/editItem.html', context)
 
 def checkIfValidAssociates(item_type, items):
+    if not items:
+        return True
     if item_type == "snack":
         if not Drink.objects.filter(item__name__in=items).exists():
             return False
@@ -164,16 +181,11 @@ def get_item_dict(item):
     }
     return ret_item
 
-def getItem(itemName):
-    
-    ret_item = get_item_dict(item)
-    return ret_item
-
 def getAllItems():
     # if request.method != 'GET':
     #     return JsonResponse({"error": "Only GET allowed"})
     
-    items = Item.objects.all()
+    items = Item.objects.all().order_by('name')
     ret_items = []
     for item in items:
         #ret_item = get_item_dict(item)
