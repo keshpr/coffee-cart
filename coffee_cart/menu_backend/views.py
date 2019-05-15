@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.http import JsonResponse, HttpResponse
 from .models import *
 from django.template import loader
@@ -11,7 +11,7 @@ from django.http import Http404
 def index(request):
     all_items = getAllItems()
     all_items = all_items['items']
-    paginator = Paginator(all_items, 2)
+    paginator = Paginator(all_items, 20)
     if not 'page' in request.GET:
         page_num = 1
     else:
@@ -123,16 +123,18 @@ def addItem(request):
 
     return JsonResponse({"success": True})
 
-def deleteItem(request, itemName):
+def deleteItem(request):
     if request.method != 'POST':
         return JsonResponse({"error": "Only POST allowed"})
     try:
-        item = Item.objects.filter(name=itemName)
+        item = Item.objects.filter(name=request.POST.get('name'))
+        print("deleting")
+        print(request.POST)
         item.delete()
     except Item.DoesNotExist:
         return JsonResponse({"error": "Item to be deleted does not exist"})
     
-    return JsonResponse({"success": True})
+    return redirect('index')
 
 def updateItem(request):
     if request.method != 'POST':
@@ -140,7 +142,7 @@ def updateItem(request):
     
     rbody = json.loads(request.body)
     try:
-        item = Item.objects.get(name=rbody['name'])
+        item = Item.objects.get(name=rbody['oldname'])
     except Item.DoesNotExist:
         return JsonResponse({"error": "Item does not exist in the menu yet"})        
     

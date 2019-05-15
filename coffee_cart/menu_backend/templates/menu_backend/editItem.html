@@ -9,7 +9,7 @@
         <form class="{{form_type}}">
             <label for="name"><strong>Item name </strong>:</label>
             <input type="text" name="name"  id="name" value="{{item.name}}">
-
+            <input type="hidden" name="oldname" id="oldname" value="{{item.name}}">
             <p><strong> Type: </strong><div id="item-type">{{item.type}}</div> </p>
 
             <strong>Ingredients:</strong><br>
@@ -53,6 +53,15 @@
             {% csrf_token %}
             <input type="submit" value="{{button_val}}">
         </form>
+        <form action="{% url 'delete-item' %}" method='post'>
+            <input type="Submit" value="Remove item from menu">
+            <input type="hidden" value="{{item.name}}" name="name">
+            {% csrf_token %}
+        </form> 
+        <form action="{% url 'index' %}" method='get'>
+            <input type="Submit" value="Back to menu">
+            {% csrf_token %}
+        </form> 
         <p id="message"></p>        
     </body>
 </html>

@@ -10,7 +10,8 @@
         {% for ingredient in item.ingredients%}
             {{ingredient}} <br>
         {% endfor%}
-        <strong>Goes well with:<strong><br>
+        <br>
+        <strong>Goes well with:</strong><br>
         {% for side_item in item.goes_well_with%}
             {{side_item}} <br>
         {% endfor%}
@@ -19,7 +20,16 @@
             {% csrf_token %}
             <input type="submit" value="Update">
             <input type="hidden" value="{{item.name}}" name="name">
-        </form>        
+        </form>
+        <form action="{% url 'delete-item' %}" method='post'>
+            <input type="Submit" value="Remove from menu">
+            <input type="hidden" value="{{item.name}}" name="name">
+            {% csrf_token %}
+        </form> 
+        <form action="{% url 'index' %}" method='get'>
+            <input type="Submit" value="Back to menu">
+            {% csrf_token %}
+        </form> 
     </body>
 </html>
 {% csrf_token %}

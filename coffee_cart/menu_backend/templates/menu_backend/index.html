@@ -6,6 +6,11 @@
         {% load static %}
         <script src="{% static "menu_backend/initial.js/" %}"></script>
         <h1>Coffee Cart Menu</h1>
+        <br>
+        <span class="current">
+            Page {{ items.number }} of {{ items.paginator.num_pages }}.
+        </span>
+        <br> <br>
         {% for item in items %}
             <a class="item-ref">{{ item }}</a><br>
         {% endfor %}
@@ -17,21 +22,18 @@
                     <a href="?page={{ items.previous_page_number }}">previous</a>
                 {% endif %}
 
-                <span class="current">
-                    Page {{ items.number }} of {{ items.paginator.num_pages }}.
-                </span>
-
                 {% if items.has_next %}
                     <a href="?page={{ items.next_page_number }}">next</a>
                     <a href="?page={{ items.paginator.num_pages }}">last &raquo;</a>
                 {% endif %}
             </span>
         </div>
+        <br>
         <div class="Add-Buttons">
             <form action="{% url 'add-view' %}" method="get" id="add-types">
+                <input type="submit" value="Add New Item"><br>
                 <input type="radio" name="type" value="snack" checked> Snack <br>
                 <input type="radio" name="type" value="drink"> Drink <br>
-                <input type="submit" value="New Item">
             </form>
         </div>
     </body>

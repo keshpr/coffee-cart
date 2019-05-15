@@ -32,6 +32,7 @@ $.ajaxSetup({
 function getBody(){
     var body = {};
     body.name = $("#name").val();
+    body.oldname = $("#oldname").val();
     body.type = $("#item-type").text();
     body.ingredients = [];
     $.each($(".ingr"), function(){
