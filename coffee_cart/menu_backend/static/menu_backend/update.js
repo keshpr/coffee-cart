@@ -67,10 +67,13 @@ function addMessage(data){
     var mess = ""
     if(data.success){
         mess += "Success!"
+        $('#message').attr('style', 'color:green');
     }else if(data.error){
         mess += "Error: " + data.error;
+        $('#message').attr('style', 'color:red');
     }
     $("#message").text(mess);
+    window.scrollTo(0,0);
 }
 
 $(document).ready(function () {

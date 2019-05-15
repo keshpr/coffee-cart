@@ -6,6 +6,8 @@
         {% load static %}
         <script src="{% static "menu_backend/update.js/" %}"></script>
         <h1>{{title}}</h1>
+        <p id="message"></p>
+        <br>
         <form class="{{form_type}}">
             <label for="name"><strong>Item name </strong>:</label>
             <input type="text" name="name"  id="name" value="{{item.name}}">
@@ -62,7 +64,6 @@
             <input type="Submit" value="Back to menu">
             {% csrf_token %}
         </form> 
-        <p id="message"></p>        
     </body>
 </html>
 {% csrf_token %}

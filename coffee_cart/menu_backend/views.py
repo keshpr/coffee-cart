@@ -1,7 +1,6 @@
 from django.shortcuts import render, redirect
 from django.http import JsonResponse, HttpResponse
 from .models import *
-from django.template import loader
 import json
 from django.core.paginator import Paginator
 from django.http import Http404
@@ -183,10 +182,7 @@ def get_item_dict(item):
     }
     return ret_item
 
-def getAllItems():
-    # if request.method != 'GET':
-    #     return JsonResponse({"error": "Only GET allowed"})
-    
+def getAllItems():    
     items = Item.objects.all().order_by('name')
     ret_items = []
     for item in items:
