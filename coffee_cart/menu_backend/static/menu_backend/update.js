@@ -47,6 +47,20 @@ function getBody(){
     return body;
 }
 
+function checkBody(body){
+    if(body.name.length == 0){
+        console.log("Not allowed")
+        addMessage({'error': 'Item name cannot be empty!'});
+        event.preventDefault();
+        return false;
+    }
+    if(body.ingredients == []){
+        addMessage({'error': 'Item must have some ingredients!'});
+        event.preventDefault();
+        return false;
+    }
+    return true;
+}
 
 function addMessage(data){
     console.log('Adding message');
@@ -82,8 +96,13 @@ $(document).ready(function () {
     });
     $(".add-form").submit(function(event){
         console.log("Sending")
-        var body = getBody();
+        var body = getBody();        
         console.log(body)
+        
+        console.log(body.name.length);
+        if(! checkBody(body)){
+            return
+        }
         $.ajax({
             url: 'http://192.168.99.100:8000/api/v1/menu/addItem/',
             type: 'POST',
@@ -101,6 +120,9 @@ $(document).ready(function () {
     
         var body = getBody();
         console.log(body);
+        if(! checkBody(body)){
+            return
+        }
         $.ajax({
             url: 'http://192.168.99.100:8000/api/v1/menu/updateItem/',
             type: 'POST',
