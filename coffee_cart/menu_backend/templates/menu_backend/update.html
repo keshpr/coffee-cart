@@ -1,0 +1,57 @@
+<html>
+    <head>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    </head>
+    <body>
+        {% load static %}
+        <script src="{% static "menu_backend/update.js/" %}"></script>
+        <h1>Coffee Cart Update Item</h1>
+        <form action="{% url 'update-view' %}" method="get" id="update-form">
+            <label for="name"><strong>Item name </strong>:</label>
+            <input type="text" name="name"  id="name" value={{item.name}}>
+
+            <p><strong> Type: </strong><div id="item-type">{{item.type}}</div> </p>
+
+            <label for="name"><strong>Ingredients:</strong></label><br>
+            <div id="ingredients">
+                <div id="list-of-ingrs">
+                    {% for ingredient in item.ingredients%}
+                        <div class="ingr">
+                            <div class="ingr-name">{{ingredient}}</div>
+                            <button type="button" class="remove-button">Remove</button>
+                        </div><br>
+                    {% endfor%}
+                </div>
+                <div id="add-ingr">
+                    <label for="new-ingr">Add ingredient:</label>
+                    <input type="text" id="new-ingr" name="new-ingr"><br>
+                    <button type="button" id="add-button-ingr">Add</button>
+                </div>                
+            </div>
+             <div id="side-items">
+                <div id="list-of-sides">
+                    {% for sideItem in item.goes_well_with%}
+                        <div class="side">
+                            <div class='side-name'>{{sideItem}}</div>   
+                            <button type="button" class="remove-button">Remove</button>
+                        </div><br>
+                    {% endfor%}
+                </div>
+                <div id="add-side">
+                    <p>Add a side:</p><br>
+                    <select size="10" multiple id="select-side">
+                        {% for sideItem in well_with%}
+                            <option value="{{sideItem}}">{{sideItem}}</option>
+                        {% endfor%}
+                    </select>
+                    <button type="button" id="add-button-side">Add</button>
+                </div>                
+            </div>
+            <br>
+            {% csrf_token %}
+            <input type="submit" value="Update Item">
+        </form>
+        <p id="message"></p>        
+    </body>
+</html>
+{% csrf_token %}

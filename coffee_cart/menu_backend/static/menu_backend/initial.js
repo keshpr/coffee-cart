@@ -31,19 +31,8 @@ $.ajaxSetup({
 
 $(document).ready(function () {
     console.log("Here")
-    $.ajax({
-        url: 'http://192.168.99.100:8000/api/v1/menu/getItem/second_item',
-        type: 'GET',
-        dataType: 'json',
-        contentType: 'application/json',
-        data: JSON.stringify({
-            "name": "second_item",
-            "ingredients": ["ingr3", "ingr4"],
-            "type": "drink",
-            "well_with": ["first_item"]
-        }),
-        success: function (data) {
-            $("p").text(JSON.stringify(data));
-        }
-    })
+    $.each($(".item-ref"), function(){
+        var ref = '/api/v1/menu/itemView/?' + $.param({'name': $(this).text()})
+        $(this).attr('href', ref);
+    });
 });

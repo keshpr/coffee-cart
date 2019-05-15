@@ -3,19 +3,58 @@ from django.http import JsonResponse, HttpResponse
 from .models import *
 from django.template import loader
 import json
+from django.core.paginator import Paginator
+from django.http import Http404
 
 # Create your views here.
-# def index(request):
-#     context = None
-#     return render(request, 'menu_backend/index.html', context)
-
-def howdy(request):
-    return JsonResponse({"pong": "Howdy"})
 
 def index(request):
-    # template = loader.get_template('menu_backend/index.html')
-    # context = None
-    return render(request, 'menu_backend/index.html', None, )
+    all_items = getAllItems()
+    all_items = all_items['items']
+    paginator = Paginator(all_items, 20)
+    if not 'page' in request.GET:
+        page_num = 1
+    else:
+        page_num = int(request.GET.get('page'))
+    return render(request, 'menu_backend/index.html', {'items':paginator.get_page(page_num)})
+
+def item(request):
+    if request.method != 'GET':
+        return JsonResponse({"error": "Only GET allowed"})
+    try:
+        item = Item.objects.get(name=request.GET.get('name'))
+    except Item.DoesNotExist:
+        raise Http404("Item does not exist on the menu")
+    
+    ret_item = get_item_dict(item)
+    print(ret_item)
+    return render(request, 'menu_backend/item.html', {'item': ret_item})
+    
+def updateView(request):
+    if request.method != 'GET':
+        return JsonResponse({"error": "Only GET allowed"})
+    try:
+        item = Item.objects.get(name=request.GET.get('name'))
+    except Item.DoesNotExist:
+        raise Http404("Item does not exist on the menu")
+    
+    ret_item = get_item_dict(item)
+    well_with = to_arr(Drink.objects.all().values_list('item__name', flat=True)) if hasattr(item, 'snack') else \
+        to_arr(Snack.objects.all().values_list('item__name', flat=True))
+    return render(request, 'menu_backend/update.html', {'item': ret_item, 'well_with': well_with})
+
+def addView(request):
+    if request.method != 'GET':
+        return JsonResponse({"error": "Only GET allowed"})
+    ret_item = {
+        "name": "",
+        "type": request.GET.get('type'),
+        "ingredients": [],
+        "goes_well_with": []
+    }
+    well_with = to_arr(Drink.objects.all().values_list('item__name', flat=True)) if request.GET.get('type') == 'snack' else \
+        to_arr(Snack.objects.all().values_list('item__name', flat=True))
+    return render(request, 'menu_backend/add.html', {'item': ret_item, 'well_with': well_with})
 
 def checkIfValidAssociates(item_type, items):
     if item_type == "snack":
@@ -46,7 +85,7 @@ def addItem(request):
     item = Item.objects.filter(name=rbody['name'])
 
     if item.exists():
-        return JsonResponse({"error": "More than one item with the same name in the menu!"})
+        return JsonResponse({"error": "Item with the same name already in the menu!"})
     
     if rbody['type'] not in ["snack", "drink"]:
         return JsonResponse({"error": "Item must be either a snack or a drink"})
@@ -125,20 +164,14 @@ def get_item_dict(item):
     }
     return ret_item
 
-def getItem(request, itemName):
-    if request.method != 'GET':
-        return JsonResponse({"error": "Only GET allowed"})
-    try:
-        item = Item.objects.get(name=itemName)
-    except Item.DoesNotExist:
-        return JsonResponse({"error": "Item does not exist in the menu yet"})  
+def getItem(itemName):
     
     ret_item = get_item_dict(item)
-    return JsonResponse(ret_item)
+    return ret_item
 
-def getAllItems(request):
-    if request.method != 'GET':
-        return JsonResponse({"error": "Only GET allowed"})
+def getAllItems():
+    # if request.method != 'GET':
+    #     return JsonResponse({"error": "Only GET allowed"})
     
     items = Item.objects.all()
     ret_items = []
@@ -146,7 +179,7 @@ def getAllItems(request):
         #ret_item = get_item_dict(item)
         ret_item = item.name
         ret_items.append(ret_item)
-    return JsonResponse({"items": ret_items})
+    return {"items": ret_items}
 
     
 
