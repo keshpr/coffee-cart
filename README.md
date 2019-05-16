@@ -9,5 +9,5 @@ Run `make` in the project directory. This builds and runs the docker containers.
 Tests have been written in `coffee-cart/menu_backend/tests.py`. To run these tests: <br>
 `docker ps` -> to find the docker container id of `coffeecart_web` <br>
 `docker exec -it <container-id> bash` to "enter" the container <br>
-Make you way to `/app/coffee-cart/` <br>
+Make your way to `/app/coffee-cart/` <br>
 `python manage.py test menu_backend` to run test cases
