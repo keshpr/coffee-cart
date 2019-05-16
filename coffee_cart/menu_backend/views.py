@@ -218,7 +218,8 @@ def checkIfValidAssociates(item_type, items):
 def getUnique(things):
     un = dict()
     for thing in things:
-        un[thing.lower()] = True
+        if thing:
+            un[thing.lower()] = True
     return list(un.keys())
 
 def checkReqArgs(args, req):
