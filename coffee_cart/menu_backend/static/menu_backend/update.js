@@ -77,32 +77,23 @@ function addMessage(data){
 }
 
 $(document).ready(function () {
-    console.log("Here")
-    
     $(document).on('click', '.remove-button', function(){
-        console.log('removing')
-        console.log($(this).parent().prop('nodeName'));
         $(this).parent().remove();
     });
     
     $("#add-button-ingr").on('click', function(){
-        console.log("Adding ingredient");
         var ingr = $(this).prev().prev().val()
-        $(this).parent().prev().append("<div class='ingr'><div class='ingr-name'>" + ingr + "</div><button type='button' class='remove-button'>Remove</button></div><br>");
+        $(this).parent().prev().append("<li class='ingr'><span class='ingr-name'>" + ingr + "</span><button type='button' class='remove-button'>Remove</button></li>");
     });
     
     $('#add-button-side').click(function(){
         $.each($("#select-side option:selected"), function(){
             var side = $(this).val();
-            $("#list-of-sides").append("<div class='side'><div class='side-name'>" + side + "</div><button type='button' class='remove-button'>Remove</button></div><br></br>")
+            $("#list-of-sides").append("<li class='side'><span class='side-name'>" + side + "</span><button type='button' class='remove-button'>Remove</button></li>")
         });
     });
     $(".add-form").submit(function(event){
-        console.log("Sending")
-        var body = getBody();        
-        console.log(body)
-        
-        console.log(body.name.length);
+        var body = getBody();
         if(! checkBody(body)){
             return
         }
@@ -113,7 +104,6 @@ $(document).ready(function () {
             contentType: 'application/json',
             data: JSON.stringify(body),
             success: function (data) {
-                console.log(data);
                 addMessage(data);
             }
         })
@@ -122,7 +112,6 @@ $(document).ready(function () {
     $(".update-form").submit(function(event){
     
         var body = getBody();
-        console.log(body);
         if(! checkBody(body)){
             return
         }
@@ -133,8 +122,6 @@ $(document).ready(function () {
             contentType: 'application/json',
             data: JSON.stringify(body),
             success: function (data) {
-                console.log("Updated??")
-                console.log(data);
                 addMessage(data);
             }
         })

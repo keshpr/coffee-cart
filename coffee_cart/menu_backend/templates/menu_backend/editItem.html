@@ -1,6 +1,7 @@
 <html>
     <head>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     </head>
     <body>
         {% load static %}
@@ -9,41 +10,43 @@
         <p id="message"></p>
         <br>
         <form class="{{form_type}}">
-            <label for="name"><strong>Item name </strong>:</label>
-            <input type="text" name="name"  id="name" value="{{item.name}}">
+            <div class="form-group">
+                <label for="name"><strong>Item name </strong>:</label>
+                <input type="text" name="name"  id="name" value="{{item.name}}" class="form-control">
+            </div>
             <input type="hidden" name="oldname" id="oldname" value="{{item.name}}">
-            <p><strong> Type: </strong><div id="item-type">{{item.type}}</div> </p>
+            <p><strong> Type: </strong><span id="item-type">{{item.type}}</span> </p>
 
-            <strong>Ingredients:</strong><br>
+            <strong>Ingredients:</strong><br><br>
             <div id="ingredients">
-                <div id="list-of-ingrs">
+                <ul id="list-of-ingrs">
                     {% for ingredient in item.ingredients%}
-                        <div class="ingr">
-                            <div class="ingr-name">{{ingredient}}</div>
+                        <li class="ingr">
+                            <span class="ingr-name">{{ingredient}}</span>
                             <button type="button" class="remove-button">Remove</button>
-                        </div><br>
+                        </li>
                     {% endfor%}
-                </div>
-                <div id="add-ingr">
+                </ul>
+                <div id="add-ingr" class="form-group">
                     <label for="new-ingr">Add ingredient:</label>
-                    <input type="text" id="new-ingr" name="new-ingr"><br>
+                    <input type="text" id="new-ingr" name="new-ingr" class="form-control"><br>
                     <button type="button" id="add-button-ingr">Add</button>
                 </div>                
             </div>
             <br>
             <strong>Sides:</strong><br>
              <div id="side-items">
-                <div id="list-of-sides">
+                <ul id="list-of-sides">
                     {% for sideItem in item.goes_well_with%}
-                        <div class="side">
-                            <div class='side-name'>{{sideItem}}</div>
+                        <li class="side">
+                            <span class='side-name'>{{sideItem}}</span>
                             <button type="button" class="remove-button">Remove</button>
-                        </div><br>
+                        </li>
                     {% endfor%}
-                </div>
-                <div id="add-side">
-                    <p>Add a side:</p><br>
-                    <select size="10" multiple id="select-side">
+                </ul>
+                <div id="add-side" class="form-group">
+                    <p class="form-text">Add a side:</p><br>
+                    <select size="10" multiple id="select-side" class="form-control">
                         {% for sideItem in well_with%}
                             <option value="{{sideItem}}">{{sideItem}}</option>
                         {% endfor%}
@@ -55,15 +58,20 @@
             {% csrf_token %}
             <input type="submit" value="{{button_val}}">
         </form>
-        <form action="{% url 'delete-item' %}" method='post'>
-            <input type="Submit" value="Remove item from menu">
-            <input type="hidden" value="{{item.name}}" name="name">
+        {% if form_type == 'update-form'%}
+            <form action="{% url 'delete-item' %}" method='post' class="form-group">
+                <input type="Submit" value="Remove item from menu" class="form-control">
+                <input type="hidden" value="{{item.name}}" name="name">
+                {% csrf_token %}
+            </form> 
+        {% endif %}
+        <form action="{% url 'index' %}" method='get' class="form-group">
+            <input type="Submit" value="Back to menu" class="form-control">
             {% csrf_token %}
         </form> 
-        <form action="{% url 'index' %}" method='get'>
-            <input type="Submit" value="Back to menu">
-            {% csrf_token %}
-        </form> 
+    
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
     </body>
 </html>
 {% csrf_token %}
