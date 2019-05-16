@@ -83,7 +83,9 @@ $(document).ready(function () {
     
     $("#add-button-ingr").on('click', function(){
         var ingr = $(this).prev().prev().val()
-        $(this).parent().prev().append("<li class='ingr'><span class='ingr-name'>" + ingr + "</span><button type='button' class='remove-button'>Remove</button></li>");
+        if(ingr){
+            $(this).parent().prev().append("<li class='ingr'><span class='ingr-name'>" + ingr + "</span><button type='button' class='remove-button'>Remove</button></li>");
+        }
     });
     
     $('#add-button-side').click(function(){
